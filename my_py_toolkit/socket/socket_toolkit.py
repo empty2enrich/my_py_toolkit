@@ -6,10 +6,10 @@
 #
 
 import socket
+import errno
 
 def is_socket_valid(self, socket_instance):
-  """ Return True if this socket is connected. """
-  import errno
+  """"""
   if not socket_instance:
     return False
   err_type = None

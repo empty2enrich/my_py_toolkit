@@ -1,2 +1,2 @@
 # my_py_toolkit
- Some common methods written by myself of python.
+ Some common methods written or found in inetrnet by myself of python.
