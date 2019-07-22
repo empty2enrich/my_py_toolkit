@@ -1,0 +1,26 @@
+Metadata-Version: 1.0
+Name: fdfs_client-py
+Version: 1.2.7
+Summary: my_py_toolkit
+Home-page: UNKNOWN
+Author:
+Author-email:
+License: GPLV3
+Description:
+        
+        my_py_toolkit.
+        
+        ## Installation
+        
+            $ sudo python setup.py install
+
+        
+        
+Keywords: Fastdfs,Distribute File System
+Platform: UNKNOWN
+Classifier: Development Status :: 1 - Production/Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: GPLV3
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
