@@ -4,9 +4,18 @@
 #
 # cython: language_level=3
 #
-
+import select
 import socket
 import errno
+
+
+def check_conn(self, conn):
+  """Check socket connect."""
+  to_read, to_write, in_error = select.select([conn], [], [], 0.001)
+  if conn in to_read:
+    return True
+  else:
+    return False
 
 def is_socket_valid(self, socket_instance):
   """"""

@@ -6,6 +6,7 @@
 #
 
 import os
+import re
 
 def get_file_paths(dir_name:str, file_type=None) -> list:
   """
@@ -22,3 +23,7 @@ def get_file_paths(dir_name:str, file_type=None) -> list:
     for file in files:
       file_paths.append(os.path.join(dir_name, file))
   return file_paths
+
+def get_file_name(file_path):
+  """"""
+  return re.split("\\\\|/", file_path)[-1]
