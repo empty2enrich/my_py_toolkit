@@ -7,7 +7,7 @@
 
 from docx import Document
 
-def get_paaragraphs(doc_path):
+def get_paragraphs(doc_path):
   """
   Gets the text of paragraphs.
   Args:
