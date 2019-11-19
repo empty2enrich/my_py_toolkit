@@ -22,7 +22,7 @@ sdict = {
     'keywords' : [''],
     'license' : 'GPLV3',
     'packages' : ['my_py_toolkit'],
-    'package_data': {'my_py_toolkit': ['*/*']},
+    'package_data': {'my_py_toolkit': ['*/*', '*/*/*', '*/*/*/*']},
     'classifiers' : [
         'Development Status :: 1 - Production/Beta',
         'Environment :: Console',
