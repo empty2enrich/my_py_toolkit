@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-from fdfs_client import __version__
+__version__ = "0.0.1"
 try:
     from setuptools import setup, Extension
 except ImportError:
