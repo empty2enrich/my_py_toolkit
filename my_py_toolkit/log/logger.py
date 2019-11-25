@@ -5,6 +5,7 @@
 # cython: language_level=3
 #
 
+import os
 import logging
 
 def get_logger(log_file_path=None, info_level=logging.DEBUG):
@@ -19,6 +20,8 @@ def get_logger(log_file_path=None, info_level=logging.DEBUG):
   logger.addHandler(console)
 
   if log_file_path:
+    if not os.path.exists(os.path.dirname(log_file_path)):
+      os.makedirs(os.path.dirname(log_file_path))
     handler = logging.FileHandler(log_file_path)
     handler.setLevel(info_level)
     handler.setFormatter(formatter)
