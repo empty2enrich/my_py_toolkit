@@ -35,12 +35,19 @@ def get_file_suffix(file_path):
   """"""
   return file_path[file_path.rfind(".") + 1:]
 
+def make_path_legal(file_path):
+  """"""
+  if not os.path.exists(os.path.dirname(file_path)):
+    os.makedirs(os.path.dirname(file_path))
+
 def readjson(file_path):
   """"""
+  make_path_legal(file_path)
   with open(file_path, "r", encoding="utf-8") as f:
     return json.load(f)
 
 def writejson(data, file_path):
   """"""
+  make_path_legal(file_path)
   with open(file_path, "w", encoding="utf-8") as f:
     f.write(json.dumps(data, ensure_ascii=False, indent=2))
