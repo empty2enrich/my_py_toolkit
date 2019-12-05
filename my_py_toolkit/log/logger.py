@@ -22,7 +22,7 @@ def get_logger(log_file_path=None, info_level=logging.DEBUG):
   if log_file_path:
     if not os.path.exists(os.path.dirname(log_file_path)):
       os.makedirs(os.path.dirname(log_file_path))
-    handler = logging.FileHandler(log_file_path)
+    handler = logging.FileHandler(log_file_path, encoding="utf-8")
     handler.setLevel(info_level)
     handler.setFormatter(formatter)
     logger.addHandler(handler)

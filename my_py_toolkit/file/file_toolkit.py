@@ -28,7 +28,15 @@ def get_file_paths(dir_name:str, file_suffix=[]) -> list:
   return file_paths
 
 def get_file_name(file_path):
-  """"""
+  """
+  Get file name.
+  Anther implement: os.path.split(file_path)[-1]
+  Args:
+    file_path:
+
+  Returns:
+
+  """
   return re.split("\\\\|/", file_path)[-1]
 
 def get_file_suffix(file_path):
