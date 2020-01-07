@@ -51,8 +51,11 @@ def draw_bar(data, labels, x_label, y_label, title, width=1, interval=1,
   ax.set_xlabel(x_label + "".join(x_tick_labels))
   ax.set_title(title)
   ax.set_xticks(x)
-  # 这里需要单独指定字体,, fontdict={"fontproperties": myfont}，否则输出是乱码,但有时不加也是正常的
-  # 注：此处如果 x trick labels 是单个字符与单个标点符号的组合，会导致label 值显示一半
+  # 这里可能需要单独指定字体, fontdict={"fontproperties": myfont}，否则输出是乱码,但有时不加也是正常的
+  # 第一次脚本需要制定字体，否则输出乱码，但后续使用中，不加也显示正常，不知道为什么？
+  # 同时加了字体还导致了其他 bug （汉子单字符只显示左边的一半）
+  # 注：此处如果 x trick labels 是单个字符与单个标点符号的组合（在加了 fontdict={"fontproperties": myfont}时），
+  # 会导致label 值显示一半，在每个字符后面加个空格可以解决问题
   # ax.set_xticklabels(x_tick_labels, fontdict={"fontproperties": myfont})
   ax.set_xticklabels(x_tick_labels)
   # ax.legend()
@@ -76,14 +79,14 @@ def autolabel(rects, ax):
 
 def test_draw_bar():
   import numpy as np
-  # a = list("郑恒冰是男是女")
+  # a = list("张三是男是女")
   a = ["张 "] * 5
   a.append("?")
   labels = {
 
     # "x_tick_labels": ["张三"] * 5,
     "x_tick_labels": a,
-    # "x_tick_labels": list("郑恒冰是男是女？"),
+    # "x_tick_labels": list("张三是男是女？"),
     "y_tick_labels": list("张三是个30岁男青年。")
   }
   data = np.random.rand(len(labels["y_tick_labels"]),
