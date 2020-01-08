@@ -31,6 +31,9 @@ def draw_bar(data, labels, x_label, y_label, title, width=1, interval=1,
   plt.rcParams['axes.unicode_minus'] = False  # 解决保存图像是负号'-'显示为方块的问题
   x_tick_labels = labels.get("x_tick_labels", [])
   y_tick_labels = labels.get("y_tick_labels", [])
+  # 处理bug：如果 x trick labels 是单个字符与单个标点符号的组合，中文字符只显示一半，加个 “ ” 能处理
+  x_tick_labels = [v + " " for v in x_tick_labels]
+  y_tick_labels = [v + " " for v in y_tick_labels]
 
   context_length = len(data)
 
