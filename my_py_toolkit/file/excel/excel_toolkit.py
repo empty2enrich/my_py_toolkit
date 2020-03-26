@@ -7,6 +7,8 @@
 
 import openpyxl
 
+from openpyxl import Workbook
+
 def read_excel_values(file_path):
   """
   读取 excel 中的内容.
@@ -30,3 +32,23 @@ def read_excel_values(file_path):
       sheet_val.append(row_val)
     values[sheet_name] = sheet_val
   return values
+
+def write_excel(data, path, title="", sheet_index=0):
+  """
+  将表格数据写入 excel 里.
+  Args:
+    data:
+    path:
+    title:
+    sheet_index:
+
+  Returns:
+
+  """
+  wb = Workbook()
+  sheet = wb.active if not title else wb.create_sheet(title, sheet_index)
+  for row_index, row in enumerate(data):
+    for col_index, cell in enumerate(row):
+      sheet.cell(row=row_index + 1, column=col_index + 1).value = cell
+  wb.save(path)
+  wb.close()
