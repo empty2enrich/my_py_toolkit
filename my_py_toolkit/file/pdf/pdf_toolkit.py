@@ -57,7 +57,7 @@ def extract_pdf_special_pages(pdf_path, save_dir, page_nums):
     for page in page_nums:
       writer.addPage(reader.getPage(page - 1))
     file_name = get_file_name(pdf_path)
-    out_file_name = file_name + "_" + ",".join([str(page) for page in page_nums]) + ".pdf"
+    out_file_name = file_name.split(".")[0] + "_" + ",".join([str(page) for page in page_nums]) + ".pdf"
     out_file_path = os.path.join(save_dir, out_file_name)
     with open(out_file_path, "wb") as outfile:
       writer.write(outfile)
