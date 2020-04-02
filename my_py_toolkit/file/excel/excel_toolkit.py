@@ -52,3 +52,15 @@ def write_excel(data, path, title="", sheet_index=0):
       sheet.cell(row=row_index + 1, column=col_index + 1).value = cell
   wb.save(path)
   wb.close()
+
+def write_excel_multi_sheets(data, path):
+  wb = Workbook()
+  sheet_index = 0
+  for sheet_name, values in data.items():
+    sheet = wb.create_sheet(sheet_name, sheet_index)
+    for row_index, row in enumerate(values):
+      for col_index, cell in enumerate(row):
+        sheet.cell(row=row_index + 1, column=col_index + 1).value = cell
+    sheet_index += 1
+  wb.save(path)
+  wb.close()
