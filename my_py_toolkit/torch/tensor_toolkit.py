@@ -5,6 +5,8 @@
 # cython: language_level=3
 #
 
+from ..basic_data_type.basic_data_type_toolkit import *
+
 def mask(tensor, tensor_mask, mask_dim):
   """
   Mask a tensor.
@@ -20,3 +22,20 @@ def mask(tensor, tensor_mask, mask_dim):
   for i in range(-mask_dim - 1):
     tensor_mask = tensor_mask.unsqueeze(-1)
   return tensor * tensor_mask
+
+def get_gradient(model):
+  """
+
+  Args:
+    model:
+
+  Returns:
+
+  """
+  gradients = {}
+  for name, parameter in model.named_parameters():
+    keys = name.split(".")
+    grad = parameter.grad
+    keys.append(grad)
+    add_value4dict(gradients, *keys)
+  return gradients

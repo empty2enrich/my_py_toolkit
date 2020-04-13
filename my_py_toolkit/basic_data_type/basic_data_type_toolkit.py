@@ -9,7 +9,7 @@ def add_value4dict(value_dict, *args):
     value_dict[args[0]] = args[1]
     return value_dict
   elif args_len > 2:
-    value_dict[args[0]] = add_value4dict({}, *args[1:])
+    value_dict[args[0]] = add_value4dict(value_dict.get(args[0], {}), *args[1:])
     return value_dict
   else:
     raise Exception(f"Args length must longer than 2, now ars is :{args}")
@@ -22,10 +22,7 @@ def append_value4dict(value_dict, *args):
     else:
       value_dict[args[0]] = [args[1]]
   else:
-    if args[0] in value_dict:
-      value_dict[args[0]] = append_value4dict(value_dict[args[0]], *args[1:])
-    else:
-      value_dict[args[0]] = append_value4dict({}, *args[1:])
+    value_dict[args[0]] = append_value4dict(value_dict.get(args[0], {}), *args[1:])
   return value_dict
 
 if __name__ == "__main__":
