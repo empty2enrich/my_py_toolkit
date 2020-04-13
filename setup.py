@@ -23,6 +23,9 @@ sdict = {
     'license' : 'GPLV3',
     'packages' : ['my_py_toolkit'],
     'package_data': {'my_py_toolkit': ['*/*', '*/*/*', '*/*/*/*']},
+    'install_requires': [
+
+    ],
     'classifiers' : [
         'Development Status :: 1 - Production/Beta',
         'Environment :: Console',
