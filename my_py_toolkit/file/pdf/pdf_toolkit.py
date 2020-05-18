@@ -62,3 +62,5 @@ def extract_pdf_special_pages(pdf_path, save_dir, page_nums):
     with open(out_file_path, "wb") as outfile:
       writer.write(outfile)
 
+
+
