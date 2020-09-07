@@ -2,7 +2,7 @@
 import os
 __version__ = "0.0.10"
 try:
-    from setuptools import setup, Extension
+    from setuptools import setup, Extension, find_packages
 except ImportError:
     from distutils.core import setup, Extension
 
@@ -21,8 +21,7 @@ sdict = {
     'maintainer_email' : '',
     'keywords' : [''],
     'license' : 'GPLV3',
-    'packages' : ['my_py_toolkit'],
-    'package_data': {'my_py_toolkit': ['*/*', '*/*/*', '*/*/*/*']},
+    'packages' : find_packages(),
     'install_requires': [
 
     ],
