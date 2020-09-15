@@ -115,6 +115,7 @@ def load_model(model_class, config):
     else:
       model = torch.load(model_path, map_location=config.device)
   model.to(config.device)
+  return model
 
 
 def get_model_trainabel_param(model):
@@ -128,7 +129,7 @@ def get_adam_optimizer(model, config):
 
   """
   params = get_model_trainabel_param(model)
-  if not config.is_continue:
+  if not config.is_continue_train:
     return torch.optim.Adam(lr=config.learning_rate, betas=(config.beta1, config.beta2),
                          eps=1e-8, weight_decay=3e-7, params=params)
   else:
