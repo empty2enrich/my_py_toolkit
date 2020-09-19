@@ -134,7 +134,7 @@ def get_adam_optimizer(model, config):
                          eps=1e-8, weight_decay=3e-7, params=params)
   else:
     config.logger.info(f"Continue train, epoch:{config.continue_epoch}, continue_checkpoint: {config.continue_checkpoint}")
-    optimizer_path = os.path.join(config.model_dir,
+    optimizer_path = os.path.join(config.model_save_dir,
                               f"optimizer_epoch{config.continue_epoch}_step{config.continue_checkpoint}.pkl")
     if not config.is_only_save_params:
       optimizer = torch.load(optimizer_path, map_location=config.device)
