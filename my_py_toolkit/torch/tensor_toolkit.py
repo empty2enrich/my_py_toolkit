@@ -5,9 +5,11 @@
 # cython: language_level=3
 #
 
+import cv2 as cv
 import math
 import torch
 from ..basic_data_type.basic_data_type_toolkit import *
+from my_py_toolkit.file.file_toolkit import make_path_legal
 
 def mask(tensor, tensor_mask, mask_dim):
   """
@@ -64,3 +66,17 @@ def get_parameter_values(model):
 def gelu(tensor):
   cdf = 0.5 *(1.0 + torch.erf(tensor/math.sqrt(2.0)))
   return tensor * cdf
+
+def save_tensor_as_picture(tensor, path):
+  """
+  将 torch 的 tensor 存为图片。
+  Args:
+    tensor:
+    path(str):
+
+  Returns:
+
+  """
+  make_path_legal(path)
+  cv.imwrite(path, tensor.numpy())
+

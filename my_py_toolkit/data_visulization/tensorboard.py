@@ -69,7 +69,8 @@ def visual_data(model, epoch, step, loss=None, optimizer=None, exact_match_total
                 visual_parameter_dir=None, visual_loss=False,
                 visual_loss_dir="", visual_optimizer=False,
                 visual_optimizer_dir="", visual_valid_result=False,
-                visual_valid_result_dir=None):
+                visual_valid_result_dir=None, visual_cnn=False,
+                visual_cnn_dir=""):
   """
   可视化训练信息。
   Args:
@@ -104,3 +105,6 @@ def visual_data(model, epoch, step, loss=None, optimizer=None, exact_match_total
       "f1_total": [f1_total],
       "f1": [f1]
     }, epoch, step)
+
+  if visual_cnn:
+    additional_datas = model.get_additional_datas()
