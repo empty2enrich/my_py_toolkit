@@ -133,13 +133,22 @@ def get_adam_optimizer(model, config):
     return torch.optim.Adam(lr=config.learning_rate, betas=(config.beta1, config.beta2),
                          eps=1e-8, weight_decay=3e-7, params=params)
   else:
-    config.logger.info(f"Continue train, epoch:{config.continue_epoch}, continue_checkpoint: {config.continue_checkpoint}")
-    optimizer_path = os.path.join(config.model_save_dir,
-                              f"optimizer_epoch{config.continue_epoch}_step{config.continue_checkpoint}.pkl")
-    if not config.is_only_save_params:
-      optimizer = torch.load(optimizer_path, map_location=config.device)
-    else:
-      optimizer = torch.optim.Adam(lr=config.learning_rate, betas=(config.beta1, config.beta2),
-                         eps=1e-8, weight_decay=3e-7, params=params)
-      optimizer.load_state_dict(torch.load(optimizer_path))
+    try:
+      config.logger.info(
+        f"Continue train, epoch:{config.continue_epoch}, continue_checkpoint: {config.continue_checkpoint}")
+      optimizer_path = os.path.join(config.model_save_dir,
+                                    f"optimizer_epoch{config.continue_epoch}_step{config.continue_checkpoint}.pkl")
+      if not config.is_only_save_params:
+        optimizer = torch.load(optimizer_path, map_location=config.device)
+      else:
+        optimizer = torch.optim.Adam(lr=config.learning_rate,
+                                     betas=(config.beta1, config.beta2),
+                                     eps=1e-8, weight_decay=3e-7, params=params)
+        optimizer.load_state_dict(torch.load(optimizer_path))
+    except Exception as e:
+      # 训练过程中如果时不时冻结一些网络继续训练， load_state_dict 会出问题，返回一个新的 optimizer
+      params = get_model_trainabel_param(model)
+      optimizer = torch.optim.Adam(lr=config.learning_rate,
+                                   betas=(config.beta1, config.beta2),
+                                   eps=1e-8, weight_decay=3e-7, params=params)
     return optimizer
