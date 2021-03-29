@@ -37,7 +37,7 @@ def encrypt_aes_sha1prng_ecb(content, key_seed):
   """
   key = sha1prng(key_seed)
   cipher = AES.new(key, AES.MODE_ECB)
-  ct_bytes = cipher.encrypt(pad(content, AES.block_size))
+  ct_bytes = cipher.encrypt(pad(content.encode(), AES.block_size))
   return b64encode(ct_bytes).decode("utf-8")
 
 def decrypt_aes_sha1prng_ecb(encrypted_content, key_seed):
@@ -55,3 +55,6 @@ def decrypt_aes_sha1prng_ecb(encrypted_content, key_seed):
   pt = unpad(cipher.decrypt(ct), AES.block_size)
   return pt.decode('utf-8')
 
+
+if __name__ == "__main__":
+  pass
