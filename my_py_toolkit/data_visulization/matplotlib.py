@@ -100,3 +100,6 @@ def test_draw_bar():
   width = 0.9
   draw_bar(data, labels, x_label, y_label, title, width)
   pass
+
+if __name__ == "__main__":
+  test_draw_bar()

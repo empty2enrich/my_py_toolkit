@@ -152,3 +152,13 @@ def get_adam_optimizer(model, config):
                                    betas=(config.beta1, config.beta2),
                                    eps=1e-8, weight_decay=3e-7, params=params)
     return optimizer
+
+
+def sequence_mask(X, valid_len, value=0):
+  """
+  屏蔽 pad 位置的值
+  """
+  maxlen = X.shape[1]
+  mask = torch.arange((maxlen), dtype=torch.float32, device=X.device)[None,:] < valid_len[:, None]
+  X[~mask] = value
+  return X
