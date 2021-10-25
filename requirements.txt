@@ -1,3 +1,5 @@
 openpyxl == 2.5.8
 pycrypto == 2.6.1
-tensorboard
+tensorboardx == 2.4
+pytorch = 1.9.1
+torchtext = 0.10.1

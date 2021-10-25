@@ -162,3 +162,56 @@ def sequence_mask(X, valid_len, value=0):
   mask = torch.arange((maxlen), dtype=torch.float32, device=X.device)[None,:] < valid_len[:, None]
   X[~mask] = value
   return X
+
+
+def load_bert(bert_cfg, use_pretrained=False, freeze_params=False, device='cpu'):
+  """
+  加载预训练好的 BERT 参数。
+
+  Args:
+      bert_cfg (str): bert 模型的配置信息; 
+        1、若初始化一个新的 BERT 模型， bert_cfg 为 bert config.json 路径；
+        2、若加载训练好的 BERT, bert_cfg 为 bert 模型所在文件夹路径
+      use_pretrained(bool): 是否加载预训练模型。
+      freeze_params(bool): 是否固定 bert 参数。
+      device(str): 设备，cpu or cuda.
+  """
+  from transformers.modeling_bert import BertConfig, BertModel
+  model = None
+  if use_pretrained:
+    model = BertModel.from_pretrained(bert_cfg).to(device)
+  else:
+    model = BertModel(BertConfig(bert_cfg))
+  
+  if freeze_params:
+    for param in model.parameters():
+      param.requires_grad = False
+  
+  return model
+
+
+# k folder 交叉验证
+def get_k_folder(*data, k=2):
+    """
+    k 折交叉验证, 把数据切成 K 份，每次选择其中一份为测试数据，剩下为训练数据
+
+    Args:
+        data(list, np.array, tensor):
+        k (int, optional): k 折. Defaults to 2.
+    """
+    if len(data) < 1:
+        raise ValueError('data must not be empty!')
+    def merge(a, b):
+        if isinstance(a, list):
+            return a + b
+        elif isinstance(a, np.ndarray):
+            return np.concatenate((a,b))
+        elif isinstance(a, torch.Tensor):
+            return torch.cat((a,b))
+
+    l = len(data[0])
+    avg = l // k
+    for i in range(k):
+        train_d = [merge(d[:i * avg], d[(i+1)*avg:]) for d in data]
+        test_d = [d[i * avg: (i+1)*avg] for d in data]
+        yield train_d, test_d
