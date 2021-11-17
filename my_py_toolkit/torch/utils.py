@@ -163,33 +163,6 @@ def sequence_mask(X, valid_len, value=0):
   X[~mask] = value
   return X
 
-
-def load_bert(bert_cfg, use_pretrained=False, freeze_params=False, device='cpu'):
-  """
-  加载预训练好的 BERT 参数。
-
-  Args:
-      bert_cfg (str): bert 模型的配置信息; 
-        1、若初始化一个新的 BERT 模型， bert_cfg 为 bert config.json 路径；
-        2、若加载训练好的 BERT, bert_cfg 为 bert 模型所在文件夹路径
-      use_pretrained(bool): 是否加载预训练模型。
-      freeze_params(bool): 是否固定 bert 参数。
-      device(str): 设备，cpu or cuda.
-  """
-  from transformers.modeling_bert import BertConfig, BertModel
-  model = None
-  if use_pretrained:
-    model = BertModel.from_pretrained(bert_cfg).to(device)
-  else:
-    model = BertModel(BertConfig(bert_cfg))
-  
-  if freeze_params:
-    for param in model.parameters():
-      param.requires_grad = False
-  
-  return model
-
-
 # k folder 交叉验证
 def get_k_folder(*data, k=2):
     """

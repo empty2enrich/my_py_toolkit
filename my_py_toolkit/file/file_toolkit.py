@@ -59,3 +59,22 @@ def writejson(data, file_path):
   make_path_legal(file_path)
   with open(file_path, "w", encoding="utf-8") as f:
     f.write(json.dumps(data, ensure_ascii=False, indent=2))
+
+
+def read_file(path, spl_char=None, ops=None, encoding='utf-8'):
+    """
+    读取文件内容, 并使用分隔符分割文本，对分割文本进行处理。
+
+    Args:
+        path (str): 文件路径
+        spl_char (str, optional): 文件内容分隔符，eg: \n, 表示把文件内容按 \n 分成数组. Defaults to None.
+        ops(function): 对值的处理函数
+    """
+    # TODO 后期把编码改 utf-8 试试
+    with open(path, 'r', encoding=encoding) as f:
+        data = f.read()
+        if spl_char is not None:
+            data = data.split(spl_char)
+        if ops:
+            data = ops(data)
+        return data
