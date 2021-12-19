@@ -7,6 +7,7 @@
 
 import collections
 import re
+import unicodedata
 
 class Vocab():
     """
@@ -45,12 +46,77 @@ class Vocab():
 ###################################### Tokenize ############################################
 ####################################################################################################
 
+class IdxTransfer(object):
+    """
+    idx 转换。
+
+    新旧 idx 转换, 新的 idx 一个可能对应多个旧 idx。旧 idx 只对应一个新 idx。
+    """
+    def __init__(self, ori2new_idx, new2ori_idx):
+        """
+        
+
+        Args:
+            ori2new_idx (list(int)): 原始 idx 与新 idx 的映射关系。
+            new2ori_idx (list((start, end))): 新 idx 与原始 idx 映射关系, 新的 idx 一个可能对于多个原始 ori, 从 start 到 end, 不包含 end。
+        """
+        self.ori2new_idx = ori2new_idx
+        self.new2ori_idx = new2ori_idx
+        
+      
+    def to_new(self, ori_idx):
+        """
+        将原始 idx 转换为 token idx。
+        注：多个原始 idx 可能对应同一个 token idx, 需要考虑 idx 越界情况。
+
+        Args:
+            ori_idx (int): 原始 idx。
+
+        Returns:
+            int: token idx。
+        """
+        if ori_idx < len(self.ori2new_idx):
+            return self.ori2new_idx[ori_idx]
+        else:
+            return len(self.new2ori_idx)
+    
+    def to_ori(self, new_idx):
+        if new_idx < len(self.new2ori_idx):
+            return self.new2ori_idx[new_idx][0]
+        else:
+            return len(self.ori2new_idx)
+
+
+    def to_new_scope(self, start, end):
+        """
+        将原始 idx 转换为 token idx。
+        注：多个原始 idx 可能对应同一个 token idx, 需要考虑 idx 越界情况。
+
+        Args:
+            start (int): 原始 idx 起始位置。
+            end (int): 原始 idx 结束位置。(不包含 end 位置)
+
+        Returns:
+            int: token idx。
+        """
+        return [self.to_new(start), self.to_new(end)]
+    
+    def to_ori_scope(self, start, end):
+        """
+        将 token idx 转换为原始 idx。
+        
+        args:
+            start (int): token idx 起始位置。
+            end (int): token idx 结束位置。(不包含 end 位置)
+        """
+        return [self.to_ori(start), self.to_ori(end)]
+
 def _tokenize_chinese_chars(text):
     """Adds whitespace around any CJK character."""
     output = []
     for char in text:
         cp = ord(char)
-        if _is_chinese_char(cp):
+        if _is_chinese_char(cp) or _is_punctuation(char):
             output.append(" ")
             output.append(char)
             output.append(" ")
@@ -58,6 +124,20 @@ def _tokenize_chinese_chars(text):
             output.append(char)
     return "".join(output)
 
+def _is_punctuation(char):
+    """Checks whether `chars` is a punctuation character."""
+    cp = ord(char)
+    # We treat all non-letter/number ASCII as punctuation.
+    # Characters such as "^", "$", and "`" are not in the Unicode
+    # Punctuation class but we treat them as punctuation anyways, for
+    # consistency.
+    if ((cp >= 33 and cp <= 47) or (cp >= 58 and cp <= 64) or
+            (cp >= 91 and cp <= 96) or (cp >= 123 and cp <= 126)):
+        return True
+    cat = unicodedata.category(char)
+    if cat.startswith("P"):
+        return True
+    return False
 
 def _is_chinese_char(cp):
     """Checks whether CP is the codepoint of a CJK character."""
@@ -127,11 +207,15 @@ def tokenize_chinese(tokenizer, txt, output_idx=False):
     for char in char_chinese:
         for cur_idx, c in  enumerate(tokenizer.tokenize(char)):
             tokens.append(c)
-            # -2: 连续数字字母被拆分后，除第一个拆分结果外，后续拆分结果前添加了前缀 '##'
-            end_idx = start_idx + len(c) - (2 if cur_idx > 0 else 0)
+            end_idx = start_idx + len(c)
+            if cur_idx > 0 and c.startswith('##'):
+                # -2: 连续数字字母被拆分后，除第一个拆分结果外，后续拆分结果前添加了前缀 '##'
+                end_idx -= 2
+            if c == '[UNK]':
+                end_idx -= 4
             new2ori_idx.append((start_idx, end_idx))
-            for _ in range(len(c)):
+            for _ in range(start_idx, end_idx):
                 ori2new_idx.append(len(tokens) - 1)
             start_idx = end_idx
         
-    return tokens, new2ori_idx, ori2new_idx
+    return tokens, IdxTransfer(ori2new_idx, new2ori_idx)

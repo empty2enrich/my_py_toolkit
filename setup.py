@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 import os
-__version__ = "0.0.10.8"
+__version__ = "0.0.10.20"
 try:
     from setuptools import setup, Extension, find_packages
 except ImportError:
     from distutils.core import setup, Extension
 
-f = open(os.path.join(os.path.dirname(__file__), 'README.md'))
+f = open(os.path.join(os.path.dirname(__file__), 'README.md'), encoding='utf-8')
 long_description = f.read()
 f.close()
 
