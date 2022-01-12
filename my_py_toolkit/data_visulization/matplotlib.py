@@ -139,6 +139,43 @@ def plot_coh(y, x, y_label=None, x_label=None, title=None, save_path=None):
     plt.show()
 
 
+def plot_coh_dict(data, x_label=None, y_label=None, title=None, save_path=None, reverse=False):
+  """
+  使用 dict 或者 Counter 等数据。
+
+  Args:
+      data (dict or Counter): 数据
+      x_label (str, optional): x 的 label. Defaults to None.
+      y_label (str, optional): y 的自定义名称. Defaults to None.
+      title (str, optional): 图的标题. Defaults to None.
+      save_path (str, optional): 图的保存路径，无便不保存. Defaults to None.
+      reverse (bool or none, optional): bool 表示 data key 的排序方式(key 为数字的情况). Defaults to False.
+  """  
+  x, y = [], []
+  for key, v in sorted(data.items(), key=lambda x: x[0], reverse=reverse):
+      x.append(key)
+      y.append(v)
+  plot_coh(y, x, y_label, x_label, save_path=save_path, title=title)
+
+def draw_bar_dict(data, y_label=None, width=0.8, title=None, label=None, save_path=None, reverse=False):
+  """
+  使用 dict 或类似的数据画图。
+
+  Args:
+      data (dict or Counter): 数据
+      y_label (str, optional): y 的label . Defaults to None.
+      width (float, optional): 直方图的宽. Defaults to 0.8.
+      title (str, optional): 标题. Defaults to None.
+      label (str, optional): label. Defaults to None.
+      save_path (str, optional): 图的保存路径，无表示不保存. Defaults to None.
+  """  
+  x, y = [], []
+  for key, v in sorted(data.items(), key=lambda x: x[0], reverse=reverse):
+      x.append(key)
+      y.append(v)
+  draw_bar(y, x, y_label, width=width, title=title, label=label, save_path=save_path)
+
+
 def test_draw_bar():
   import numpy as np
   # a = list("张三是男是女")
