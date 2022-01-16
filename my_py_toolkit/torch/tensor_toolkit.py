@@ -2,6 +2,8 @@
 # Copyright
 # Author:
 #
+# Tensor 的一些操作
+#
 # cython: language_level=3
 #
 
@@ -80,3 +82,5 @@ def save_tensor_as_picture(tensor, path):
   make_path_legal(path)
   cv.imwrite(path, tensor.numpy())
 
+def reshape_tensor(tensor, shape):
+  return tensor.contiguous().view(*shape)

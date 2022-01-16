@@ -9,6 +9,7 @@ import numpy as np
 import os
 import torch
 from my_py_toolkit.file.file_toolkit import make_path_legal
+from torch.optim.lr_scheduler import LambdaLR
 
 def add_value4dict(value_dict, *args):
   args_len = len(args)
@@ -188,3 +189,31 @@ def get_k_folder(*data, k=2):
         train_d = [merge(d[:i * avg], d[(i+1)*avg:]) for d in data]
         test_d = [d[i * avg: (i+1)*avg] for d in data]
         yield train_d, test_d
+
+####################################################################################################
+###################################### warmup ############################################
+####################################################################################################
+
+
+def get_linear_warmup(optizer, nums_warmup_step, nums_train_step, last_epoch=-1):
+  """
+  线性 warmup。
+
+  Args:
+      optizer ([type]): [description]
+      nums_warmup_step ([type]): [description]
+      nums_train_step ([type]): [description]
+      last_epoch (int, optional): [description]. Defaults to -1.
+  """
+  def warmup(cur_step):
+      if cur_step < nums_warmup_step:
+          return cur_step / max(0, nums_warmup_step)
+      return max(0, nums_train_step - cur_step)/max(1, nums_train_step - nums_warmup_step)
+  return LambdaLR(optizer, warmup, last_epoch)
+
+def get_constant_warmup(optizer, nums_warmup_step, nums_train_step, last_epoch=-1):
+  def warmup(cur_step):
+      if cur_step < nums_warmup_step:
+          return cur_step / max(0, nums_warmup_step)
+      return 1
+  return LambdaLR(optizer, warmup, last_epoch)    
