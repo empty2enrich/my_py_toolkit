@@ -291,6 +291,7 @@ def tokenize_chinese(tokenizer, txt, output_idx=False):
                 # ' \n\t\r' 都转换为 '[PAD]'了，这些 token 不需要
                 if c == '[PAD]':
                     print(f'{char} 中 token 出现 [PAD]')
+                    new2ori_idx.append((start_idx, start_idx + 1))
                     continue
                 
                 if start_idx > len(txt) - 1:
