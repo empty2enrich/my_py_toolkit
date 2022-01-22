@@ -42,7 +42,7 @@ def load_bert(bert_cfg, use_pretrained=False, freeze_params=False, device='cpu')
   if use_pretrained:
     model = BertModel.from_pretrained(bert_cfg).to(device)
   else:
-    model = BertModel(BertConfig(bert_cfg)).to(device)
+    model = BertModel(BertConfig.from_json_file(bert_cfg)).to(device)
   
   if freeze_params:
     for param in model.parameters():
