@@ -12,7 +12,7 @@ from turtle import forward
 import torch
 
 from torch.functional import F
-from tensor_toolkit import mask
+from .tensor_toolkit import mask
 
 def gen_pos_emb(seq_len, dim, pe_type='normal'):
     """

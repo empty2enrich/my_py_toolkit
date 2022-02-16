@@ -13,22 +13,26 @@ import torch
 from ..basic_data_type.basic_data_type_toolkit import *
 from my_py_toolkit.file.file_toolkit import make_path_legal
 
-def mask(tensor, tensor_mask, mask_dim):
+def mask(tensor, tensor_mask, mask_dim, mask_value=0):
   """
   Mask a tensor.
   Args:
     tensor(torch.Tensor): 输入
-    tensor_mask(torch.Tensor): mask 位置信息.
+    tensor_mask(torch.Tensor): mask 位置信息. 注：数据类型必须是 Int, 否则不能正确 mask。
     mask_dim(int): 负数，指定需要 mask 的维度，example：mask_dim = -1, 表示在最后一维上做 mask 操作.
       example: tensor is shape(3,3,3), -1 表示对最后一维的 len=3 的数组做 mask.
   Returns:
   """
   if not mask_dim < 0:
     raise Exception(f"Mask dim only supports negative numbers! Mask dim: {mask_dim} ")
-
-  for i in range(-mask_dim - 1):
+  tensor_mask = 1 - tensor_mask
+  if mask_dim < 0:
+    mask_dim = tensor.dim() + mask_dim
+  for _ in range(mask_dim - tensor_mask.dim() + 1):
+    tensor_mask = tensor_mask.unsqueeze(1)
+  for _ in range(tensor.dim() - tensor_mask.dim()):
     tensor_mask = tensor_mask.unsqueeze(-1)
-  return tensor * tensor_mask
+  return tensor.masked_fill(tensor_mask, mask_value)
 
 def get_gradient(model):
   """
