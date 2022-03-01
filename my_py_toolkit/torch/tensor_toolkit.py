@@ -25,7 +25,8 @@ def mask(tensor, tensor_mask, mask_dim, mask_value=0):
   """
   if not mask_dim < 0:
     raise Exception(f"Mask dim only supports negative numbers! Mask dim: {mask_dim} ")
-  tensor_mask = 1 - tensor_mask
+  # to(bool) 原因: 使用 cuda 时, masked_fill 不支持 mask_tensor 为非 bool, 使用 cpu 时无影响 
+  tensor_mask = ~ tensor_mask.to(bool)
   if mask_dim < 0:
     mask_dim = tensor.dim() + mask_dim
   for _ in range(mask_dim - tensor_mask.dim() + 1):

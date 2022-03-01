@@ -45,7 +45,7 @@ def get_file_suffix(file_path):
 
 def make_path_legal(file_path):
   """"""
-  if not os.path.exists(os.path.dirname(file_path)):
+  if os.path.dirname(file_path) and not os.path.exists(os.path.dirname(file_path)):
     os.makedirs(os.path.dirname(file_path))
 
 def readjson(file_path):
