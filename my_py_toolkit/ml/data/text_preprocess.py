@@ -218,7 +218,7 @@ def split_chinese(txt):
         txt (str): 待分割字符串。
     """
     txt = _tokenize_chinese_chars(txt)
-    return re.split(' +', txt.strip())
+    return re.split('\s+', txt.strip())
 
 
 def get_sub_scope(txt, subs):
