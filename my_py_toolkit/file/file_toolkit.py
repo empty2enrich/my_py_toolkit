@@ -78,3 +78,16 @@ def read_file(path, spl_char=None, ops=None, encoding='utf-8'):
         if ops:
             data = ops(data)
         return data
+
+        
+        
+
+def copy_file(source_dir, target_dir, file_nums=-1):
+    file_paths = get_file_paths(source_dir)
+    if file_nums > 0:
+        file_paths = file_paths[:file_nums]
+    for file in file_paths:
+        with open(file, 'rb') as r:
+            with open(f'{target_dir}/{get_file_name(file)}', 'wb') as w:
+                w.write(r.read())
+    
