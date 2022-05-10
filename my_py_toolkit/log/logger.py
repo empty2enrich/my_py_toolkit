@@ -8,16 +8,17 @@
 import os
 import logging
 
-def get_logger(log_file_path=None, info_level=logging.DEBUG):
+def get_logger(log_file_path=None, info_level=logging.DEBUG, console_out=False):
   formatter = logging.Formatter(
     '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
   logger = logging.getLogger(__name__)
   logger.setLevel(level=info_level)
 
-  console = logging.StreamHandler()
-  console.setLevel(info_level)
-  console.setFormatter(formatter)
-  logger.addHandler(console)
+  if console_out:
+    console = logging.StreamHandler()
+    console.setLevel(info_level)
+    console.setFormatter(formatter)
+    logger.addHandler(console)
 
   if log_file_path:
     if not os.path.exists(os.path.dirname(log_file_path)):

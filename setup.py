@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-__version__ = "0.0.10.35"
+__version__ = "0.0.10.36"
 try:
     from setuptools import setup, Extension, find_packages
 except ImportError:
