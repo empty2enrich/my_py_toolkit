@@ -1,4 +1,5 @@
 
+import cv2
 import numpy as np
 from PIL import Image
 
@@ -43,3 +44,16 @@ def merge_picture(source, target, source_seg, imsize=256, seg_ids=None):
     new_img = sour_np * mask + targ_np * ~ mask
     new_img = Image.fromarray(new_img, mode='RGB')
     return new_img
+
+def warp_img(img, M, shape):
+    # 图像对齐
+    output_img = np.zeros(shape, dtype=img.dtype)
+    cv2.warpAffine(img,
+                   M[:2],
+                   (shape[1], shape[0]),
+                   dst=output_img,
+                   borderMode=cv2.BORDER_TRANSPARENT,
+                   flags=cv2.WARP_INVERSE_MAP)
+    return output_img
+
+

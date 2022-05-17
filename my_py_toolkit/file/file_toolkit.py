@@ -90,4 +90,21 @@ def copy_file(source_dir, target_dir, file_nums=-1):
         with open(file, 'rb') as r:
             with open(f'{target_dir}/{get_file_name(file)}', 'wb') as w:
                 w.write(r.read())
-    
+                
+                
+def copy_file_split(files, target_dir):
+    for file in files:
+        target_file = target_dir + '/' + get_file_name(file)
+        make_path_legal(target_file)
+        with open(file, 'rb') as r:
+          with open(target_file, 'wb') as w:
+            w.write(r.read())
+        # if not os.path.exists(target_file):
+        #     os.system('cp ' + file + ' ' + target_file)
+
+def split_trainval(dir, suff=[], ratio=0.9):
+    # 将数据集拆分为 train, val
+    paths = get_file_paths(dir, suff)
+    idx_split = int(len(paths) * ratio)
+    copy_file_split(paths[:idx_split], dir + '/train')
+    copy_file_split(paths[idx_split:], dir + '/val')
