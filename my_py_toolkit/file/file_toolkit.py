@@ -48,6 +48,12 @@ def make_path_legal(file_path):
   if os.path.dirname(file_path) and not os.path.exists(os.path.dirname(file_path)):
     os.makedirs(os.path.dirname(file_path))
 
+def make_dir_legal(dir_path):
+  """"""
+  if not os.path.exists(dir_path):
+    os.makedirs(dir_path)
+
+
 def readjson(file_path):
   """"""
   make_path_legal(file_path)
