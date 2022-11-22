@@ -8,6 +8,23 @@
 import json
 import os
 import re
+import sys
+
+
+
+def get_sub_dirs(par_dir):
+  """
+  get sub dirs.
+
+  Args:
+      par_dir (str): parent dir
+
+  Returns:
+      dirs: sub dirs
+  """
+  _, sub_dirs, _ = os.walk(par_dir).__next__()
+  sub_dirs = [f'{par_dir}/{v}' for v in sub_dirs]
+  return sub_dirs
 
 def get_file_paths(dir_name:str, file_suffix=[]) -> list:
   """
@@ -42,6 +59,10 @@ def get_file_name(file_path):
 def get_file_suffix(file_path):
   """"""
   return file_path[file_path.rfind(".") + 1:]
+
+def make_dir_legal(dir_name):
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
 
 def make_path_legal(file_path):
   """"""
@@ -108,9 +129,25 @@ def copy_file_split(files, target_dir):
         # if not os.path.exists(target_file):
         #     os.system('cp ' + file + ' ' + target_file)
 
+def copy_single_file(source, target):
+  make_path_legal(target)
+  with open(source, 'rb') as r:
+          with open(target, 'wb') as w:
+            w.write(r.read())
+
 def split_trainval(dir, suff=[], ratio=0.9):
     # 将数据集拆分为 train, val
     paths = get_file_paths(dir, suff)
     idx_split = int(len(paths) * ratio)
     copy_file_split(paths[:idx_split], dir + '/train')
     copy_file_split(paths[idx_split:], dir + '/val')
+
+    
+def split_dir_with_nums(root_dir, save_dir, split_nums):
+    subs = os.listdir(root_dir)
+    for i, sub in enumerate(subs):
+        # windows, linux 命令不一样
+        cmd = 'mv' if sys.platform == 'linux' else "move"
+        make_path_legal(os.path.join(save_dir, str(i//split_nums), sub))
+        cmd = f'{cmd} {os.path.join(root_dir, sub)} {os.path.join(save_dir, str(i//split_nums), sub)}'
+        os.system(cmd)
