@@ -87,6 +87,28 @@ def writejson(data, file_path):
   with open(file_path, "w", encoding="utf-8") as f:
     f.write(json.dumps(data, ensure_ascii=False, indent=2))
 
+def readcsv(file_path):
+  res = []
+  
+  with open(file_path, 'r') as f:
+    for line in f.read().split('\n'):
+      if not line:
+        continue
+      
+      res.append(line.split(','))
+      
+  return res
+
+def writecsv(data, file_path):
+  # data(list(list)): [[v1,..], ...]
+  data = [
+          ','.join([str(v) for v in values]) 
+          for values in data
+          ]
+  
+  with open(file_path, 'w') as f:
+    f.write('\n'.join(data))
+
 
 def read_file(path, spl_char=None, ops=None, encoding='utf-8'):
     """
@@ -151,3 +173,9 @@ def split_dir_with_nums(root_dir, save_dir, split_nums):
         make_path_legal(os.path.join(save_dir, str(i//split_nums), sub))
         cmd = f'{cmd} {os.path.join(root_dir, sub)} {os.path.join(save_dir, str(i//split_nums), sub)}'
         os.system(cmd)
+        
+        
+def filename_append(name_or_path, *apps):
+  """
+  """
+  

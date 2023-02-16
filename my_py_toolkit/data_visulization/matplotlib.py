@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import matplotlib
 import numpy as np
+from collections import Counter
+
 
 # def draw_bar(data, labels, x_label, y_label, title, width=1, interval=1,
 #              save_path="./test_bar.png"):
@@ -175,6 +177,31 @@ def draw_bar_dict(data, y_label=None, width=0.8, title=None, label=None, save_pa
       y.append(v)
   draw_bar(y, x, y_label, width=width, title=title, label=label, save_path=save_path)
 
+def draw_bar_count(arrs, x_label='cos', y_label='nums of feature'):
+    arrs = [round(v, 2) for v in arrs]
+    cts = Counter(arrs)
+    x, y = [], []
+    for k, v in cts.items():
+        x.append(k)
+        y.append(v)
+        
+    # plot
+    fig, ax = plt.subplots()
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
+    ax.bar(x, y, width=0.01) #, linewidth=0.01)
+    plt.show()
+    
+def draw_lines(xs, ys, labels, xlabel='', y_label=''):
+    fig, ax = plt.subplots()
+    for x, y, l in zip(xs, ys, labels):
+        ax.plot(x, y, linewidth=2.0, label=l)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(y_label)
+    ax.legend()
+    plt.show()  
+    
+    
 
 def test_draw_bar():
   import numpy as np
