@@ -10,22 +10,6 @@ import os
 import re
 import sys
 
-
-
-def get_sub_dirs(par_dir):
-  """
-  get sub dirs.
-
-  Args:
-      par_dir (str): parent dir
-
-  Returns:
-      dirs: sub dirs
-  """
-  _, sub_dirs, _ = os.walk(par_dir).__next__()
-  sub_dirs = [f'{par_dir}/{v}' for v in sub_dirs]
-  return sub_dirs
-
 def get_file_paths(dir_name:str, file_suffix=[]) -> list:
   """
   Gets all file path.
@@ -151,6 +135,16 @@ def copy_file_split(files, target_dir):
         # if not os.path.exists(target_file):
         #     os.system('cp ' + file + ' ' + target_file)
 
+
+def split_dir_with_nums(root_dir, save_dir, split_nums):
+    subs = os.listdir(root_dir)
+    for i, sub in enumerate(subs):
+        # windows, linux 命令不一样
+        cmd = 'mv' if sys.platform == 'linux' else "move"
+        make_path_legal(os.path.join(save_dir, str(i//split_nums), sub))
+        cmd = f'{cmd} {os.path.join(root_dir, sub)} {os.path.join(save_dir, str(i//split_nums), sub)}'
+        os.system(cmd)
+        print(cmd)
 def copy_single_file(source, target):
   make_path_legal(target)
   with open(source, 'rb') as r:
@@ -173,6 +167,28 @@ def split_dir_with_nums(root_dir, save_dir, split_nums):
         make_path_legal(os.path.join(save_dir, str(i//split_nums), sub))
         cmd = f'{cmd} {os.path.join(root_dir, sub)} {os.path.join(save_dir, str(i//split_nums), sub)}'
         os.system(cmd)
+
+# =================================== python envs
+def read_env(path):
+    reg = '\s+|=='
+    result = []
+    for line in read_file(path, '\n'):
+        if not line:
+            continue
+
+        pkg_name, ver = re.split(reg, line)
+        result.append([pkg_name, ver])
+    return result
+
+
+def compare_env(env1, env2):
+    env1_pkg = set([p for p,v in env1])
+    env2_pkg = set([p for p,v in env2])
+
+    miss_pkg = env2_pkg - env1_pkg
+    odd_pkg = env1_pkg - env2_pkg
+    same_pkg = env1_pkg & env2_pkg
+    return miss_pkg, odd_pkg, same_pkg
         
         
 def filename_append(name_or_path, *apps):
