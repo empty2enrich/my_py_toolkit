@@ -4,6 +4,7 @@ import numpy as np
 from shutil import copy, move
 from tqdm import tqdm
 from my_py_toolkit.file.file_toolkit import *
+from multiprocessing import Pool, cpu_count
 
 def get_group_file(data_dir):
     res_group = []
@@ -147,7 +148,32 @@ def main():
         log.write(f'group ids: {group_ids}, life: {group[0]}')
         bar.update(1)
             
-            
+# handle data
+
+def copy_mul_thr(files, save_dir, ori_dir):
+    result = []
+    with Pool(cpu_count()) as p:
+        for file in files:
+            new_path = file.replace(ori_dir, save_dir)
+            make_path_legal(new_path)
+            p.apply_async(copy, (file, new_path))
+        p.close()
+        p.join()
+
+        for r in result:
+            print(r.get())
+
+def split_dir_with_delete_info(ori_dir, handled_dir, save_dir):
+    ori_files = get_file_paths(ori_dir)
+    ori_files = [f.replace(ori_dir, '') for f in ori_files]
+    handled_files = get_file_paths(handled_dir)
+    handled_files = [f.replace(handled_dir, '') for f in handled_files]
+
+    deleted_files = set(ori_files) - set(handled_files)
+    deleted_files = [ori_dir + file for file in deleted_files]
+    print(f'ori files: {len(ori_files)}, handled files: {len(handled_files)}, deleted files: {len(deleted_files)}')
+
+    copy_mul_thr(deleted_files, save_dir, ori_dir)       
         
         
     
