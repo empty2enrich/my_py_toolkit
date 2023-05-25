@@ -5,6 +5,7 @@ from shutil import copy, move
 from tqdm import tqdm
 from my_py_toolkit.file.file_toolkit import *
 from multiprocessing import Pool, cpu_count
+import random
 
 def get_group_file(data_dir):
     res_group = []
@@ -148,7 +149,7 @@ def main():
         log.write(f'group ids: {group_ids}, life: {group[0]}')
         bar.update(1)
             
-# handle data
+# =================================================   handle data dir
 
 def copy_mul_thr(files, save_dir, ori_dir):
     result = []
@@ -175,7 +176,54 @@ def split_dir_with_delete_info(ori_dir, handled_dir, save_dir):
 
     copy_mul_thr(deleted_files, save_dir, ori_dir)       
         
+
+
+def get_split_name(dir_par, split_res):
+    for k, values in split_res.items():
+        if dir_par in values:
+            return k
+    
+    return ''
+
+def copy_dir(file, data_dir, save_dir, copy_nums=5):
+    cur_dir = os.path.dirname(file)
+    files = os.listdir(cur_dir)
+    files = [f for f in files 
+             if os.path.isfile(os.path.join(cur_dir, f))]
+    random.shuffle(files)
+    for file in files[:copy_nums]:
+        path = os.path.join(cur_dir, file)
+        new_path = path.replace(data_dir, save_dir)
+        make_path_legal(new_path)
+        copy(path, new_path)
+
+def split_with_split_res(data_dir, save_dir, split_res_path, copy_num=-1):
+    # 1、读取所有文件夹
+    # 2、按 split 划分训练测试集
+    # 3、每个文件夹，保留 5 张
+
+    split_res = readjson(split_res_path)
+    data_dir = data_dir.rstrip('\/')
+    save_dir = save_dir.rstrip('\/')
+    copy_num = int(copy_num)
+    if copy_num < 0:
+        copy_num = sys.maxsize
+    
+    dir_copyed = set()
+    for file in tqdm(get_file_paths(data_dir, ['.bmp'])):
+        # print(file)
+        dir_par = re.split('\\\\|/', file)[-2]
+        if dir_par in dir_copyed:
+            continue
         
+        split_name = get_split_name(dir_par, split_res)
+        cur_save_dir = os.path.join(save_dir, split_name)
+        if not split_name:
+            continue
+
+        copy_dir(file, data_dir, cur_save_dir, copy_num)
+        dir_copyed.add(dir_par)
+
     
 
 if __name__ == '__main__':
