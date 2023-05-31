@@ -224,7 +224,35 @@ def split_with_split_res(data_dir, save_dir, split_res_path, copy_num=-1):
         copy_dir(file, data_dir, cur_save_dir, copy_num)
         dir_copyed.add(dir_par)
 
-    
+
+
+def copy_file_each_dir_one(data_dir, save_dir, filelist=None, suffix=[]):
+    data_dir = os.path.abspath(data_dir)
+    save_dir = os.path.abspath(save_dir)
+    select_dirs = set()
+
+    files = []
+    if filelist:
+        files = read_file(filelist, '\n')
+    else:
+        files = get_file_paths(data_dir, suffix)
+
+    for path in tqdm(files):
+        if not path:
+            continue
+        path = path.split(' ')[0]
+        if not os.path.exists(path):
+            print(f'not exist: {path}')
+            continue
+
+        p_dir = re.split('\\\\|/', path)[-2]
+        if p_dir not in select_dirs:
+            new_path = path.replace(data_dir, save_dir)
+            make_path_legal(new_path)
+            copy(path, new_path)
+            select_dirs.add(p_dir)
+
+
 
 if __name__ == '__main__':
     main()
