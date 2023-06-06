@@ -9,6 +9,8 @@ import json
 import os
 import re
 import sys
+from shutil import copy
+from multiprocessing import Pool, cpu_count
 
 def get_file_paths(dir_name:str, file_suffix=[]) -> list:
   """
@@ -170,6 +172,19 @@ def split_dir_with_nums(root_dir, save_dir, split_nums):
         make_path_legal(os.path.join(save_dir, str(i//split_nums), sub))
         cmd = f'{cmd} {os.path.join(root_dir, sub)} {os.path.join(save_dir, str(i//split_nums), sub)}'
         os.system(cmd)
+
+def copy_files_multi(files, data_dir, save_dir):
+    # random.shuffle(files)
+    with Pool(cpu_count()) as pool:
+        result = []
+        for file in files:
+            new_path = file.replace(data_dir, save_dir)
+            make_path_legal(new_path)
+            pool.apply_async(copy, (file, new_path))
+        pool.close()
+        pool.join()
+        for _ in result:
+            print(_.get())
 
 # =================================== python envs
 def read_env(path):
