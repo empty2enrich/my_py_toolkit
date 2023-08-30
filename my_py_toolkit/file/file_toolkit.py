@@ -186,6 +186,32 @@ def copy_files_multi(files, data_dir, save_dir):
         for _ in result:
             print(_.get())
 
+
+def check_line_nums(cts, line_nums):
+    if line_nums < 0:
+        return True
+    
+    if cts < line_nums:
+        return True
+    
+    return False
+
+def read_lines(path, line_nums=-1):
+    result = []
+    with open(path, 'r') as r:
+        line = r.readline()
+        cts = 0
+        while line:
+            if not check_line_nums(cts, line_nums):
+                break
+            
+            line = line.strip('\n')
+            result.append(line)
+
+            line = r.readline()
+            cts += 1
+    return result
+
 # =================================== python envs
 def read_env(path):
     reg = '\s+|=='
