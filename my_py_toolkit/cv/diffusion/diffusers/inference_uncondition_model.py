@@ -37,12 +37,12 @@ def load_model(path):
 def save_images(images, path):
     images = images * 255
     b, h, w, c = images.shape
-    images = np.reshape(b*h, w, c)
+    images = np.reshape(images, (b*h, w, c))
     cv2.imwrite(path, images)
 
 def main():
     device = 'cuda:0'
-    eval_batch_size = 1
+    eval_batch_size = 2
     ddpm_num_steps = 1000
     ddpm_num_inference_steps = 1000
     ddpm_beta_schedule = "linear"
