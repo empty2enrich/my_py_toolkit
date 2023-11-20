@@ -7,7 +7,7 @@ import os
 import re
 import sys
 from tqdm import tqdm
-
+from os import remove
 
 
 def read_file(path, spl_char=None, ops=None, encoding='utf-8'):
@@ -117,12 +117,13 @@ def handle_content_string(value):
         'source': '来源',
         'value': '内容'
     }
-    for name_en in name_mapping:
-        if name_en in value:
+    for name_en, name_zh in name_mapping.items():
+        if name_en in value and value.get(name_en, ''):
+            cur += f'{name_zh}: '
             if name_en == 'value':
-                cur += handle_content(value.get(name_en, '')) + '\n'
+                cur += handle_content(value.get(name_en, '')) + ';'
             else:
-                cur += value.get(name_en, '') + '\n'
+                cur += value.get(name_en, '') + ';'
     return cur
 
 def get_meta_data(data):
@@ -145,7 +146,7 @@ def handle_data_dict(path, file_info):
     data = readjson(path)
     # 检测改网页是否爬取成功
     if data['code'] != 200:
-        return {'文件': fn, 'code': data['code'], '内容':'网页爬取识别', '文件信息': file_info}
+        return {'文件': fn, 'code': data['code'], '内容':'网页爬取失败', '文件信息': file_info}
 
     # 提取内容
     meta_data = get_meta_data(data['data'])
@@ -205,6 +206,8 @@ def main():
     writer_dict_string = open(string_path, 'w', encoding='utf-8')
     writer_error = open(error_path, 'w', encoding='utf-8')
 
+    error_cts = 0
+
     file_info = get_info(data_dir)
     for file in tqdm(get_file_paths(data_dir)):
         fn = get_file_name(file)
@@ -215,10 +218,13 @@ def main():
         string_res = handle_data_string(file, file_info.get(fn, []))
         if 'code' in dict_res:
             write2file(writer_error, dict_res)
+            error_cts += 1
         else:
             write2file(writer_dict_res, dict_res)
             write2file(writer_dict_string, string_res)
 
+    if error_cts == 0:
+        remove(error_path)
 if __name__ == '__main__':
     main()
 

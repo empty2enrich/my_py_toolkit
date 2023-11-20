@@ -72,6 +72,12 @@ def writejson(data, file_path):
   make_path_legal(file_path)
   with open(file_path, "w", encoding="utf-8") as f:
     f.write(json.dumps(data, ensure_ascii=False, indent=2))
+  
+def writejsonl(datas, file_path):
+    make_path_legal(file_path)
+    with open(file_path, 'w', encoding='utf-8') as w:
+        for d in datas:
+            w.write(json.dumps(d, ensure_ascii=False) + '\n')
 
 def readcsv(file_path):
   res = []
@@ -239,3 +245,28 @@ def filename_append(name_or_path, *apps):
   """
   """
   
+  
+  
+
+def get_files_with_label(data_dir, label_json):
+    result = {}
+    label = readjson(label_json)
+    label = {name:set(vs) for name, vs in label.items()}
+    files = get_file_paths(data_dir)
+    for file in get_file_paths(data_dir):
+        fn = get_file_name(file)
+        for name, vs in label.items():
+            if fn[:fn.rfind('.')] in vs:
+                if name not in result:
+                    result[name] = []
+                result[name].append(file)
+    return result
+
+def split_dir_with_label(data_dir, save_dir, label_json):
+    files = get_files_with_label(data_dir, label_json)
+
+    for name, values in tqdm(files.items()):
+        sub_dir = os.path.join(save_dir, name)
+        os.makedirs(sub_dir, exist_ok=True)
+        copy_files_multi(values, data_dir, sub_dir)
+

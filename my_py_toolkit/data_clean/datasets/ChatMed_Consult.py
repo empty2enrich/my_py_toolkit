@@ -35,7 +35,7 @@ def check_values(value, keys):
     return False
 
 def check_keys_valid(value):
-    keys = [['input', 'instruction', '指示', '指令', '输入'], ['output', '输出']]
+    keys = [['input', 'instruction', '指示', '指令', '输入', 'query'], ['output', '输出', 'response']]
     res = [check_values(value, k) for k in keys]
     if all(res):
         return True
